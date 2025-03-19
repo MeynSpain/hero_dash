@@ -35,7 +35,6 @@ class Obstacle extends RectangleComponent with HasGameReference<GameApp> {
 
     if (position.x <= -size.x / 2) {
       removeFromParent();
-      log('Obstacle removed');
     }
   }
 }

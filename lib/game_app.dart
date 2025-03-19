@@ -9,7 +9,7 @@ import 'package:hero_dash/components/displays/health_display.dart';
 import 'package:hero_dash/components/obstacle.dart';
 import 'package:hero_dash/components/player.dart';
 
-class GameApp extends FlameGame with TapCallbacks, HasCollisionDetection {
+class GameApp extends FlameGame with DragCallbacks, HasCollisionDetection {
   late final Player player;
   late final SpawnComponent _obstacleSpawner;
   late final HealthDisplay healthDisplay;
@@ -70,15 +70,8 @@ class GameApp extends FlameGame with TapCallbacks, HasCollisionDetection {
     super.update(dt);
   }
 
-  @override
-  void onTapDown(TapDownEvent event) {
-    super.onTapDown(event);
-
-    player.jump();
-  }
-
   void playerDied() {
-    pauseEngine();
+    // pauseEngine();
   }
 
   void _createObstacleSpawner() {
@@ -90,4 +83,38 @@ class GameApp extends FlameGame with TapCallbacks, HasCollisionDetection {
     );
     add(_obstacleSpawner);
   }
+
+  @override
+  void onDragStart(DragStartEvent event) {
+    super.onDragStart(event);
+
+    player.jump();
+  }
+
+  @override
+  void onDragUpdate(DragUpdateEvent event) {
+    super.onDragUpdate(event);
+    print('DRAG UPDATE');
+    player.startGliding();
+  }
+
+  @override
+  void onDragEnd(DragEndEvent event) {
+    super.onDragEnd(event);
+
+    player.stopGliding();
+  }
+
+  @override
+  void onDragCancel(DragCancelEvent event) {
+    super.onDragCancel(event);
+
+    player.stopGliding();
+  }
+
+  // @override
+  // void onLongTapDown(TapDownEvent event) {
+  //   super.onLongTapDown(event);
+  //   player.gliding();
+  // }
 }

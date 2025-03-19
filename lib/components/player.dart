@@ -12,17 +12,26 @@ import 'package:hero_dash/utils/math_utils.dart';
 
 class Player extends RectangleComponent
     with HasGameReference<GameApp>, CollisionCallbacks {
+  // Система прыжков
   late final double _jumpHeight;
   final double _gravity = PlayerSettings.gravity;
   late double _initialJumSpeed;
+  bool _isOnGround = true;
+  double _verticalVelocity = 0;
+
+  // Для двойного прыжка
+  int _jumpCount = 0; // Сколько прыжков совершил игрок
+  int _maxJumpCount = 3; // Кол-во прыжков + планирование.
+
+  // Планирование (глайдинг)
+  bool _isGliding = false;
+
+  // Система здоровья
   final int _maxHealth = 3;
   late int _health;
   bool _isDead = false;
 
   HealthObserver? _healthObserver;
-
-  bool _isOnGround = true;
-  double _verticalVelocity = 0;
 
   int get maxHealth => _maxHealth;
 
@@ -60,9 +69,13 @@ class Player extends RectangleComponent
   }
 
   void jump() {
-    if (_isOnGround) {
+    if (_isOnGround || _jumpCount < _maxJumpCount) {
       _isOnGround = false;
-      _verticalVelocity = _initialJumSpeed;
+      _jumpCount++;
+      if (_jumpCount < _maxJumpCount) {
+        _verticalVelocity = _initialJumSpeed;
+      }
+      print('Jumps: $_jumpCount');
     }
   }
 
@@ -71,14 +84,37 @@ class Player extends RectangleComponent
     if (!_isOnGround) {
       _verticalVelocity += _gravity * dt;
 
+      if (_isGliding) {
+        _verticalVelocity = _verticalVelocity.clamp(
+          -_gravity * 0.2,
+          _gravity * 0.2,
+        );
+      }
+
       position.y += _verticalVelocity * dt;
 
       if (position.y >= game.size.y - 10 && !_isOnGround) {
         position.y = game.size.y - 10;
-        _isOnGround = true;
         _verticalVelocity = 0;
+        _jumpCount = 0;
+        _isOnGround = true;
+        _isGliding = false;
       }
     }
+  }
+
+  void startGliding() {
+    if (!_isOnGround && _jumpCount == _maxJumpCount) {
+      _isGliding = true;
+      size = Vector2(size.y, size.x);
+    }
+  }
+
+  void stopGliding() {
+    if (_isGliding) {
+      size = Vector2(size.y, size.x);
+    }
+    _isGliding = false;
   }
 
   void takeDamage(int value) {
