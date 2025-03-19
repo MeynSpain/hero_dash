@@ -1,11 +1,13 @@
+import 'dart:async';
 import 'dart:developer';
 import 'dart:ui';
 
+import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:hero_dash/game_app.dart';
 
 class Obstacle extends RectangleComponent with HasGameReference<GameApp> {
-  final double speed = 100;
+  final double speed = 200;
 
   Obstacle({required super.position})
     : super(
@@ -13,6 +15,13 @@ class Obstacle extends RectangleComponent with HasGameReference<GameApp> {
         size: Vector2.all(50),
         anchor: Anchor.bottomCenter,
       );
+
+  @override
+  FutureOr<void> onLoad() {
+    add(RectangleHitbox(collisionType: CollisionType.passive));
+
+    return super.onLoad();
+  }
 
   @override
   void update(double dt) {

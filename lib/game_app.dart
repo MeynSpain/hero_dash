@@ -5,22 +5,49 @@ import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
+import 'package:hero_dash/components/displays/health_display.dart';
 import 'package:hero_dash/components/obstacle.dart';
 import 'package:hero_dash/components/player.dart';
 
-class GameApp extends FlameGame with TapCallbacks {
+class GameApp extends FlameGame with TapCallbacks, HasCollisionDetection {
   late final Player player;
   late final SpawnComponent _obstacleSpawner;
+  late final HealthDisplay healthDisplay;
 
   @override
   Future<void> onLoad() async {
     await Flame.device.fullScreen();
     await Flame.device.setLandscape();
 
+    debugMode = true;
+
+    startGame();
+
+    return super.onLoad();
+  }
+
+  void startGame() {
+    _createPlayer();
+    _createHealthDisplay();
+    _createObstacleSpawner();
+    _createDebugComponents();
+  }
+
+  void _createPlayer() {
     player = Player(position: Vector2(100, size.y - 10));
 
     add(player);
+  }
 
+  void _createHealthDisplay() {
+    healthDisplay = HealthDisplay(position: Vector2(20, 20));
+
+    player.subscribeHealthObserver(healthDisplay);
+
+    add(healthDisplay);
+  }
+
+  void _createDebugComponents() {
     add(
       RectangleComponent(
         paint: Paint()..color = Color.fromRGBO(1, 255, 1, 1),
@@ -36,12 +63,6 @@ class GameApp extends FlameGame with TapCallbacks {
         size: Vector2(100, 2),
       ),
     );
-
-    add(TextComponent(text: 'Game', position: Vector2(size.x / 2, size.y / 2)));
-
-    _createObstacleSpawner();
-
-    return super.onLoad();
   }
 
   @override
@@ -54,6 +75,10 @@ class GameApp extends FlameGame with TapCallbacks {
     super.onTapDown(event);
 
     player.jump();
+  }
+
+  void playerDied() {
+    pauseEngine();
   }
 
   void _createObstacleSpawner() {
