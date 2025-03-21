@@ -4,7 +4,9 @@ import 'dart:math';
 import 'package:flame/components.dart';
 import 'package:hero_dash/components/obstacle/obstacle.dart';
 
-abstract class ObjectObstacle extends SpriteComponent implements Obstacle {
+/// Абстрактный класс противника. Потом нужно заменить наследование от PositionComponent
+/// на SpriteAnimationComponent
+abstract class EnemyObstacle extends RectangleComponent implements Obstacle {
   @override
   final double speed;
 
@@ -14,7 +16,7 @@ abstract class ObjectObstacle extends SpriteComponent implements Obstacle {
   @override
   final int maxHealth;
 
-  ObjectObstacle({
+  EnemyObstacle({
     required this.speed,
     required this.health,
     required this.maxHealth,
@@ -26,12 +28,6 @@ abstract class ObjectObstacle extends SpriteComponent implements Obstacle {
   FutureOr<void> onLoad() {
     super.onLoad();
     addHitBox();
-  }
-
-  @override
-  void update(double dt) {
-    super.update(dt);
-    move(dt);
   }
 
   /// Вызывается в методе onLoad
@@ -48,5 +44,13 @@ abstract class ObjectObstacle extends SpriteComponent implements Obstacle {
   @override
   void takeDamage(int value) {
     health = max(health - value, 0);
+
+    if (health <= 0) {
+      death();
+    }
   }
+
+  void knockBack(double range);
+
+  void death();
 }

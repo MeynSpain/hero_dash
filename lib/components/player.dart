@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
+import 'package:hero_dash/components/obstacle/enemy_obstacle/enemy_obstacle.dart';
 import 'package:hero_dash/components/obstacle/obstacle.dart';
 import 'package:hero_dash/game_app.dart';
 import 'package:hero_dash/observers/health_observer.dart';
@@ -117,7 +119,7 @@ class Player extends RectangleComponent
   }
 
   void takeDamage(int value) {
-    _health -= value;
+    _health = max(_health - value, 0);
     _healthObserver?.onHealthChanged(_health);
     if (_health <= 0) {
       death();
@@ -136,9 +138,12 @@ class Player extends RectangleComponent
   ) {
     super.onCollisionStart(intersectionPoints, other);
 
-
     if (other is Obstacle) {
       takeDamage(1);
+      if (other is EnemyObstacle) {
+        print('Должено быть отталкивание');
+        other.knockBack(400);
+      }
     }
   }
 

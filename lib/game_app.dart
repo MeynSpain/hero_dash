@@ -6,6 +6,7 @@ import 'package:flame/events.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:hero_dash/components/displays/health_display.dart';
+import 'package:hero_dash/components/obstacle/enemy_obstacle/test_enemy.dart';
 import 'package:hero_dash/components/obstacle/object_obstacle/test_rock.dart';
 import 'package:hero_dash/components/player.dart';
 
@@ -87,13 +88,20 @@ class GameApp extends FlameGame with DragCallbacks, HasCollisionDetection {
   void _createObstacleSpawner() {
     _obstacleSpawner = SpawnComponent.periodRange(
       factory:
-          (index) => TestRock(
+          (index) => TestEnemy(
             speed: 200,
             health: 3,
             maxHealth: 3,
-            size: Vector2.all(50),
-            position: Vector2(size.x + 10, player.y - 25),
+            size: Vector2(50, 75),
+            position: Vector2(size.x + 10, player.y),
           ),
+      //     TestRock(
+      //   speed: 200,
+      //   health: 3,
+      //   maxHealth: 3,
+      //   size: Vector2.all(50),
+      //   position: Vector2(size.x + 10, player.y - 25),
+      // ),
       // Obstacle1(position: Vector2(size.x + 10, player.y)),
       minPeriod: 1.0,
       maxPeriod: 2.0,

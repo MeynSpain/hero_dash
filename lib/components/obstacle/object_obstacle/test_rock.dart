@@ -25,7 +25,7 @@ class TestRock extends ObjectObstacle with HasGameReference<GameApp> {
 
   @override
   void addHitBox() {
-    add(CircleHitbox());
+    add(CircleHitbox(collisionType: CollisionType.passive));
   }
 
   @override
