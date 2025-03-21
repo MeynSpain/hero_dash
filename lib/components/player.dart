@@ -1,10 +1,9 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
-import 'package:hero_dash/components/obstacle.dart';
+import 'package:hero_dash/components/obstacle/obstacle.dart';
 import 'package:hero_dash/game_app.dart';
 import 'package:hero_dash/observers/health_observer.dart';
 import 'package:hero_dash/settings/player_settings.dart';
@@ -98,7 +97,7 @@ class Player extends RectangleComponent
         _verticalVelocity = 0;
         _jumpCount = 0;
         _isOnGround = true;
-        _isGliding = false;
+        stopGliding();
       }
     }
   }
@@ -136,6 +135,7 @@ class Player extends RectangleComponent
     PositionComponent other,
   ) {
     super.onCollisionStart(intersectionPoints, other);
+
 
     if (other is Obstacle) {
       takeDamage(1);
