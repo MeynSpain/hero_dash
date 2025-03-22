@@ -117,6 +117,11 @@ class GameApp extends FlameGame with DragCallbacks, HasCollisionDetection {
     if (event.localPosition.x < size.x / 2) {
       player.jump();
     }
+
+    if (event.localPosition.x > size.x / 2) {
+      print('Attack');
+      player.attack();
+    }
   }
 
   @override

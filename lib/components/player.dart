@@ -4,8 +4,11 @@ import 'dart:ui';
 
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
+import 'package:hero_dash/components/attack_component.dart';
 import 'package:hero_dash/components/obstacle/enemy_obstacle/enemy_obstacle.dart';
 import 'package:hero_dash/components/obstacle/obstacle.dart';
+import 'package:hero_dash/components/weapon/melee_weapon/melee_weapon.dart';
+import 'package:hero_dash/components/weapon/weapon.dart';
 import 'package:hero_dash/game_app.dart';
 import 'package:hero_dash/observers/health_observer.dart';
 import 'package:hero_dash/settings/player_settings.dart';
@@ -34,6 +37,16 @@ class Player extends RectangleComponent
 
   HealthObserver? _healthObserver;
 
+  MeleeWeapon weapon = MeleeWeapon(
+    knockBackRange: 400,
+    range: 100,
+    widthAttack: 50,
+    damage: 1,
+    attackSpeed: 0.1,
+  );
+
+  late AttackComponent attackComponent;
+
   int get maxHealth => _maxHealth;
 
   int get currentHealth => _health;
@@ -53,6 +66,15 @@ class Player extends RectangleComponent
 
     add(RectangleHitbox());
 
+    attackComponent = AttackComponent(
+      damage: weapon.damage,
+      knockBackRange: weapon.knockBackRange,
+      size: Vector2(weapon.range, weapon.widthAttack),
+      position: Vector2(size.x, size.y / 2),
+    );
+
+    add(attackComponent);
+
     return super.onLoad();
   }
 
@@ -67,6 +89,7 @@ class Player extends RectangleComponent
     super.update(dt);
 
     _jumpUpdate(dt);
+    weapon.updateCoolDown(dt);
   }
 
   void jump() {
@@ -140,10 +163,13 @@ class Player extends RectangleComponent
 
     if (other is Obstacle) {
       takeDamage(1);
-      if (other is EnemyObstacle) {
-        print('Должено быть отталкивание');
-        other.knockBack(400);
-      }
+    }
+  }
+
+  void attack() {
+    if (weapon.coolDown <= 0) {
+      attackComponent.activate();
+      weapon.attack();
     }
   }
 
