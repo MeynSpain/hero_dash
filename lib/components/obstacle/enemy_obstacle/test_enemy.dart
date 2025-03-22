@@ -23,7 +23,6 @@ class TestEnemy extends EnemyObstacle with HasGameReference<GameApp> {
     _originalVelocity.setFrom(_velocity);
   }
 
-
   @override
   void update(double dt) {
     super.update(dt);
@@ -43,14 +42,15 @@ class TestEnemy extends EnemyObstacle with HasGameReference<GameApp> {
   }
 
   @override
+  void addHitBox() {
+    add(RectangleHitbox());
+  }
+
+  /* Перенес эту логику в EnemyObstacle
+   @override
   void knockBack(double range) {
     print('KnockBack');
     _applyKnockBack(range);
-  }
-
-  @override
-  void addHitBox() {
-    add(RectangleHitbox());
   }
 
   void _applyKnockBack(double range) {
@@ -69,6 +69,7 @@ class TestEnemy extends EnemyObstacle with HasGameReference<GameApp> {
   void _restoreVelocity() {
     _velocity.setFrom(_originalVelocity);
   }
+   */
 
   void _flashWhite() {
     final flashEffect = ColorEffect(

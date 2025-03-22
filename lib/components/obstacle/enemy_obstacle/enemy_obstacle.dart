@@ -2,11 +2,16 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flame/components.dart';
+import 'package:flame/effects.dart';
 import 'package:hero_dash/components/obstacle/obstacle.dart';
 
 /// Абстрактный класс противника. Потом нужно заменить наследование от PositionComponent
 /// на SpriteAnimationComponent
 abstract class EnemyObstacle extends RectangleComponent implements Obstacle {
+  late Vector2 velocity;
+
+  final Vector2 _originalVelocity = Vector2.zero();
+
   @override
   final double speed;
 
@@ -22,7 +27,10 @@ abstract class EnemyObstacle extends RectangleComponent implements Obstacle {
     required this.maxHealth,
     required super.size,
     required super.position,
-  }) : super(anchor: Anchor.center);
+  }) : super(anchor: Anchor.center) {
+    velocity = Vector2(-1 * speed, 0);
+    _originalVelocity.setFrom(velocity);
+  }
 
   @override
   FutureOr<void> onLoad() {
@@ -50,7 +58,30 @@ abstract class EnemyObstacle extends RectangleComponent implements Obstacle {
     }
   }
 
-  void knockBack(double range);
+  void knockBack(double range) {
+    _applyKnockBack(range);
+  }
+
+  void _applyKnockBack(double range) {
+    velocity.setZero();
+
+    double duration = 0;
+
+    // За каждые 100 пикселей добавляется время на полет
+    duration = (range / 100) * 0.15;
+
+    final MoveByEffect knockBackEffect = MoveByEffect(
+      Vector2(range, 0),
+      EffectController(duration: duration),
+      onComplete: _restoreVelocity,
+    );
+
+    add(knockBackEffect);
+  }
+
+  void _restoreVelocity() {
+    velocity.setFrom(_originalVelocity);
+  }
 
   void death();
 }
