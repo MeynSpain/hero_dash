@@ -4,16 +4,18 @@ import 'dart:math';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:hero_dash/components/obstacle/obstacle.dart';
+import 'package:hero_dash/game_app.dart';
 
 /// Абстрактный класс противника. Потом нужно заменить наследование от PositionComponent
 /// на SpriteAnimationComponent
 abstract class EnemyObstacle extends RectangleComponent implements Obstacle {
+  @override
   late Vector2 velocity;
 
   final Vector2 _originalVelocity = Vector2.zero();
 
   @override
-  final double speed;
+  double speed;
 
   @override
   int health;
@@ -28,7 +30,7 @@ abstract class EnemyObstacle extends RectangleComponent implements Obstacle {
     required super.size,
     required super.position,
   }) : super(anchor: Anchor.center) {
-    velocity = Vector2(-1 * speed, 0);
+    velocity = Vector2(-1, 0) * speed ;
     _originalVelocity.setFrom(velocity);
   }
 
@@ -45,7 +47,7 @@ abstract class EnemyObstacle extends RectangleComponent implements Obstacle {
   @override
   void move(double dt) {
     if (position.x <= -size.x / 2) {
-      removeFromParent();
+      removeFromGame();
     }
   }
 
@@ -79,9 +81,22 @@ abstract class EnemyObstacle extends RectangleComponent implements Obstacle {
     add(knockBackEffect);
   }
 
+  @override
+  void updateSpeed(double newSpeed) {
+    velocity = velocity.normalized() * newSpeed;
+  }
+
   void _restoreVelocity() {
     velocity.setFrom(_originalVelocity);
   }
 
   void death();
+
+  @override
+  void removeFromGame() {
+    removeFromParent();
+    if (parent is GameApp) {
+      (parent as GameApp).removeFromGame(this);
+    }
+  }
 }

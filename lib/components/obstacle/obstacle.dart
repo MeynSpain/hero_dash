@@ -1,7 +1,10 @@
+import 'package:flame/components.dart';
+
 abstract class Obstacle {
-  final double speed;
+  double speed;
   int health;
   final int maxHealth;
+  late Vector2 velocity;
 
   Obstacle({
     required this.health,
@@ -12,4 +15,8 @@ abstract class Obstacle {
   void move(double dt);
 
   void takeDamage(int value);
+
+  void removeFromGame();
+
+  void updateSpeed(double newSpeed);
 }

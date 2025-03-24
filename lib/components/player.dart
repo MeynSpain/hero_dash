@@ -35,9 +35,14 @@ class Player extends RectangleComponent
   late int _health;
   bool _isDead = false;
 
+  // Дэш
+  final double dashMultiplier = 4.0;
+  final int dashDuration = 500;
+  bool canDash = true;
+
   HealthObserver? _healthObserver;
 
-  MeleeWeapon weapon = MeleeWeapon(
+  final MeleeWeapon weapon = MeleeWeapon(
     knockBackRange: 400,
     range: 100,
     widthAttack: 50,
@@ -110,8 +115,8 @@ class Player extends RectangleComponent
 
       if (_isGliding) {
         _verticalVelocity = _verticalVelocity.clamp(
-          -_gravity * 0.2,
-          _gravity * 0.2,
+          -_gravity * 0.5,
+          _gravity * 0.1,
         );
       }
 
@@ -139,6 +144,20 @@ class Player extends RectangleComponent
       size = Vector2(size.y, size.x);
     }
     _isGliding = false;
+  }
+
+  void dash() {
+    if (!canDash) return;
+
+    canDash = false;
+
+    print('Dash Activate');
+
+    game.activateDash(dashMultiplier, Duration(milliseconds: dashDuration));
+
+    Future.delayed(Duration(milliseconds: dashDuration), () {
+      canDash = true;
+    });
   }
 
   void takeDamage(int value) {

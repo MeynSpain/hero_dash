@@ -7,7 +7,7 @@ import 'package:hero_dash/components/obstacle/enemy_obstacle/enemy_obstacle.dart
 import 'package:hero_dash/game_app.dart';
 
 class TestEnemy extends EnemyObstacle with HasGameReference<GameApp> {
-  late Vector2 _velocity;
+  // late Vector2 _velocity;
   final Vector2 _originalVelocity = Vector2.zero();
 
   TestEnemy({
@@ -19,8 +19,9 @@ class TestEnemy extends EnemyObstacle with HasGameReference<GameApp> {
   }) {
     paint.color = Color.fromRGBO(1, 1, 255, 1);
     anchor = Anchor.bottomCenter;
-    _velocity = Vector2(-1 * speed, 0);
-    _originalVelocity.setFrom(_velocity);
+
+    velocity = Vector2(-1 * speed, 0);
+    _originalVelocity.setFrom(velocity);
   }
 
   @override
@@ -32,13 +33,13 @@ class TestEnemy extends EnemyObstacle with HasGameReference<GameApp> {
 
   @override
   void move(double dt) {
-    position += _velocity * dt;
+    position += velocity * dt;
     super.move(dt);
   }
 
   @override
   void death() {
-    removeFromParent();
+    removeFromGame();
   }
 
   @override

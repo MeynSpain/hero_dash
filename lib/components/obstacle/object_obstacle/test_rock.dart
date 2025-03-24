@@ -6,6 +6,9 @@ import 'package:hero_dash/components/obstacle/object_obstacle/object_obstacle.da
 import 'package:hero_dash/game_app.dart';
 
 class TestRock extends ObjectObstacle with HasGameReference<GameApp> {
+  @override
+  late Vector2 velocity;
+
   final double _spinSpeed = -1.5;
 
   TestRock({
@@ -31,7 +34,7 @@ class TestRock extends ObjectObstacle with HasGameReference<GameApp> {
   @override
   void move(double dt) {
     super.move(dt);
-    position.x -= speed * dt;
+
     _rotateUpdate(dt);
   }
 

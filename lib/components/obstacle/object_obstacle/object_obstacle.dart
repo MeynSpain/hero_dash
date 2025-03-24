@@ -3,10 +3,11 @@ import 'dart:math';
 
 import 'package:flame/components.dart';
 import 'package:hero_dash/components/obstacle/obstacle.dart';
+import 'package:hero_dash/game_app.dart';
 
 abstract class ObjectObstacle extends SpriteComponent implements Obstacle {
   @override
-  final double speed;
+  double speed;
 
   @override
   int health;
@@ -20,7 +21,9 @@ abstract class ObjectObstacle extends SpriteComponent implements Obstacle {
     required this.maxHealth,
     required super.size,
     required super.position,
-  }) : super(anchor: Anchor.center);
+  }) : super(anchor: Anchor.center) {
+    velocity = Vector2(-1, 0) * speed;
+  }
 
   @override
   FutureOr<void> onLoad() {
@@ -40,13 +43,27 @@ abstract class ObjectObstacle extends SpriteComponent implements Obstacle {
   /// По умолчанию объект удаляется если он вышел за левый край экрана
   @override
   void move(double dt) {
+    position += velocity * dt;
     if (position.x <= -size.x / 2) {
-      removeFromParent();
+      removeFromGame();
     }
   }
 
   @override
   void takeDamage(int value) {
     health = max(health - value, 0);
+  }
+
+  @override
+  void updateSpeed(double newSpeed) {
+    velocity = velocity.normalized() * newSpeed;
+  }
+
+  @override
+  void removeFromGame() {
+    removeFromParent();
+    if (parent is GameApp) {
+      (parent as GameApp).removeFromGame(this);
+    }
   }
 }
