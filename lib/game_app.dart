@@ -7,6 +7,7 @@ import 'package:flame/events.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:hero_dash/components/displays/health_display.dart';
+import 'package:hero_dash/components/group_obstacles/group_obstacle.dart';
 import 'package:hero_dash/components/group_obstacles/test_group.dart';
 import 'package:hero_dash/components/obstacle/enemy_obstacle/enemy_obstacle.dart';
 import 'package:hero_dash/components/obstacle/enemy_obstacle/test_enemy.dart';
@@ -21,7 +22,7 @@ class GameApp extends FlameGame with DragCallbacks, HasCollisionDetection {
   late final HealthDisplay healthDisplay;
 
   // Тест для деша
-  final List<Obstacle> movingObstacles = [];
+  final List<GroupObstacle> movingGroupObstacles = [];
 
   // Свайп
   Vector2? _startPosition;
@@ -81,6 +82,7 @@ class GameApp extends FlameGame with DragCallbacks, HasCollisionDetection {
       ..position = Vector2(size.x + 20, player.position.y);
 
     add(testGroup);
+    movingGroupObstacles.add(testGroup);
   }
 
   @override
@@ -108,7 +110,7 @@ class GameApp extends FlameGame with DragCallbacks, HasCollisionDetection {
             position: Vector2(size.x + 10, player.y),
           );
 
-          movingObstacles.add(obstacle);
+          // movingObstacles.add(obstacle);
 
           return obstacle as EnemyObstacle;
         } else {
@@ -120,7 +122,7 @@ class GameApp extends FlameGame with DragCallbacks, HasCollisionDetection {
             position: Vector2(size.x + 10, player.y - 25),
           );
 
-          movingObstacles.add(obstacle);
+          // movingObstacles.add(obstacle);
 
           return obstacle as ObjectObstacle;
         }
@@ -151,19 +153,18 @@ class GameApp extends FlameGame with DragCallbacks, HasCollisionDetection {
     add(_obstacleSpawner);
   }
 
-  void removeFromGame(Obstacle obstacle) {
-    movingObstacles.remove(obstacle);
-  }
+
+
 
   void activateDash(double dashSpeedMultiplier, Duration duration) {
-    for (var obstacle in movingObstacles) {
+    for (var obstacle in movingGroupObstacles) {
       print('Obstacle old speed: ${obstacle.velocity}');
       obstacle.updateSpeed(obstacle.speed * dashSpeedMultiplier);
       print('Obstacle new speed: ${obstacle.velocity}');
     }
 
     Future.delayed(duration, () {
-      for (var obstacle in movingObstacles) {
+      for (var obstacle in movingGroupObstacles) {
         obstacle.updateSpeed(obstacle.speed);
         print('Obstacle Обновилась speed: ${obstacle.velocity}');
       }

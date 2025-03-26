@@ -99,9 +99,5 @@ abstract class EnemyObstacle extends RectangleComponent implements Obstacle {
   void removeFromGame() {
     removeFromParent();
     print('Удаление enemy из parent');
-    if (parent is GameApp) {
-      print('Попытка удаления enemy из игры');
-      (parent as GameApp).removeFromGame(this);
-    }
   }
 }

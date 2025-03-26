@@ -65,8 +65,5 @@ abstract class ObjectObstacle extends SpriteComponent implements Obstacle {
   void removeFromGame() {
     print('Удалено препятствие');
     removeFromParent();
-    if (parent is GameApp) {
-      (parent as GameApp).removeFromGame(this);
-    }
   }
 }
