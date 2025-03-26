@@ -7,6 +7,7 @@ import 'package:flame/events.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:hero_dash/components/displays/health_display.dart';
+import 'package:hero_dash/components/group_obstacles/test_group.dart';
 import 'package:hero_dash/components/obstacle/enemy_obstacle/enemy_obstacle.dart';
 import 'package:hero_dash/components/obstacle/enemy_obstacle/test_enemy.dart';
 import 'package:hero_dash/components/obstacle/object_obstacle/object_obstacle.dart';
@@ -41,7 +42,7 @@ class GameApp extends FlameGame with DragCallbacks, HasCollisionDetection {
   void startGame() {
     _createPlayer();
     _createHealthDisplay();
-    _createObstacleSpawner();
+    // _createObstacleSpawner();
     _createDebugComponents();
   }
 
@@ -76,15 +77,10 @@ class GameApp extends FlameGame with DragCallbacks, HasCollisionDetection {
       ),
     );
 
-    // add(
-    //   TestRock(
-    //     speed: 200,
-    //     health: 3,
-    //     maxHealth: 3,
-    //     size: Vector2.all(50),
-    //     position: Vector2(20, 20),
-    //   ),
-    // );
+    final testGroup = TestGroup(speed: 200)
+      ..position = Vector2(size.x + 20, player.position.y);
+
+    add(testGroup);
   }
 
   @override
@@ -117,13 +113,12 @@ class GameApp extends FlameGame with DragCallbacks, HasCollisionDetection {
           return obstacle as EnemyObstacle;
         } else {
           obstacle = TestRock(
-              speed: 200,
-              health: 3,
-              maxHealth: 3,
-              size: Vector2.all(50),
-              position: Vector2(size.x + 10, player.y - 25),
-            );
-
+            speed: 200,
+            health: 3,
+            maxHealth: 3,
+            size: Vector2.all(50),
+            position: Vector2(size.x + 10, player.y - 25),
+          );
 
           movingObstacles.add(obstacle);
 
@@ -170,9 +165,7 @@ class GameApp extends FlameGame with DragCallbacks, HasCollisionDetection {
     Future.delayed(duration, () {
       for (var obstacle in movingObstacles) {
         obstacle.updateSpeed(obstacle.speed);
-        print(
-          'Obstacle Обновилась speed: ${obstacle.velocity}',
-        );
+        print('Obstacle Обновилась speed: ${obstacle.velocity}');
       }
     });
   }
@@ -193,8 +186,6 @@ class GameApp extends FlameGame with DragCallbacks, HasCollisionDetection {
     }
   }
 
-
-
   @override
   void onDragUpdate(DragUpdateEvent event) {
     super.onDragUpdate(event);
@@ -209,7 +200,6 @@ class GameApp extends FlameGame with DragCallbacks, HasCollisionDetection {
     super.onDragEnd(event);
     _swipe();
     player.stopGliding();
-
   }
 
   @override

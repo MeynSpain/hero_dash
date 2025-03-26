@@ -43,8 +43,10 @@ abstract class ObjectObstacle extends SpriteComponent implements Obstacle {
   /// По умолчанию объект удаляется если он вышел за левый край экрана
   @override
   void move(double dt) {
+    // print('ABs: $absolutePosition');
+    // print('Pos: $position');
     position += velocity * dt;
-    if (position.x <= -size.x / 2) {
+    if (absolutePosition.x <= -size.x / 2) {
       removeFromGame();
     }
   }
@@ -61,6 +63,7 @@ abstract class ObjectObstacle extends SpriteComponent implements Obstacle {
 
   @override
   void removeFromGame() {
+    print('Удалено препятствие');
     removeFromParent();
     if (parent is GameApp) {
       (parent as GameApp).removeFromGame(this);

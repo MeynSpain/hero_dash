@@ -30,7 +30,7 @@ abstract class EnemyObstacle extends RectangleComponent implements Obstacle {
     required super.size,
     required super.position,
   }) : super(anchor: Anchor.center) {
-    velocity = Vector2(-1, 0) * speed ;
+    velocity = Vector2(-1, 0) * speed;
     _originalVelocity.setFrom(velocity);
   }
 
@@ -46,8 +46,11 @@ abstract class EnemyObstacle extends RectangleComponent implements Obstacle {
   /// По умолчанию объект удаляется если он вышел за левый край экрана
   @override
   void move(double dt) {
-    if (position.x <= -size.x / 2) {
+    // print('ABs: $absolutePosition');
+    // print('Pos: $position');
+    if (absolutePosition.x <= -size.x / 2) {
       removeFromGame();
+      // removeFromParent();
     }
   }
 
@@ -95,7 +98,9 @@ abstract class EnemyObstacle extends RectangleComponent implements Obstacle {
   @override
   void removeFromGame() {
     removeFromParent();
+    print('Удаление enemy из parent');
     if (parent is GameApp) {
+      print('Попытка удаления enemy из игры');
       (parent as GameApp).removeFromGame(this);
     }
   }
